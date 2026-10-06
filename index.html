@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESP32 W5500 TCP Commands Reference</title>
+    <title>ESP32 W5500 TCP Commands Reference | Linux, PowerShell & Node.js</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -17,10 +17,12 @@
             --border-highlight: #3b82f6;
             --primary: #3b82f6;
             --primary-glow: rgba(59, 130, 246, 0.25);
-            --success: #10b981;
-            --success-glow: rgba(16, 185, 129, 0.25);
-            --warning: #f59e0b;
-            --warning-glow: rgba(245, 158, 11, 0.2);
+            --linux: #f59e0b;
+            --linux-glow: rgba(245, 158, 11, 0.2);
+            --ps: #60a5fa;
+            --ps-glow: rgba(96, 165, 250, 0.2);
+            --node: #10b981;
+            --node-glow: rgba(16, 185, 129, 0.2);
             --text-main: #f1f5f9;
             --text-muted: #94a3b8;
             --text-dim: #64748b;
@@ -44,14 +46,14 @@
         }
 
         .container {
-            max-width: 980px;
+            max-width: 1020px;
             margin: 0 auto;
         }
 
         /* Header */
         header {
             text-align: center;
-            margin-bottom: 35px;
+            margin-bottom: 30px;
             padding-bottom: 25px;
             border-bottom: 1px solid var(--border);
         }
@@ -71,17 +73,17 @@
         }
 
         header h1 {
-            font-size: 2.1rem;
+            font-size: 2.15rem;
             font-weight: 700;
             color: #fff;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             letter-spacing: -0.02em;
         }
 
         header p {
             color: var(--text-muted);
             font-size: 1.05rem;
-            max-width: 650px;
+            max-width: 720px;
             margin: 0 auto;
         }
 
@@ -89,9 +91,9 @@
         .settings-bar {
             background: var(--bg-surface);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 16px 20px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             display: flex;
             flex-wrap: wrap;
             align-items: center;
@@ -127,7 +129,7 @@
         }
 
         .input-item label {
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             color: var(--text-dim);
             font-weight: 600;
             text-transform: uppercase;
@@ -140,12 +142,16 @@
             font-family: var(--font-mono);
             font-size: 0.9rem;
             font-weight: 600;
-            width: 110px;
+            width: 115px;
             outline: none;
         }
 
         .input-item input.port-input {
             width: 55px;
+        }
+
+        .input-item input.sec-input {
+            width: 45px;
         }
 
         .btn-reset {
@@ -164,6 +170,83 @@
             color: #fff;
             border-color: var(--text-dim);
             background: var(--bg-card);
+        }
+
+        /* Platform Filter Toolbar */
+        .filter-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding: 8px 14px;
+            background: rgba(17, 23, 38, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+
+        .filter-label {
+            font-size: 0.84rem;
+            color: var(--text-dim);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .filter-pills {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-pill {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .filter-pill:hover {
+            color: #fff;
+            border-color: #3b82f6;
+        }
+
+        .filter-pill.active {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: var(--primary);
+            color: #60a5fa;
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        .filter-pill.active[data-target="linux"] {
+            background: rgba(245, 158, 11, 0.2);
+            border-color: var(--linux);
+            color: #fbbf24;
+            box-shadow: 0 0 10px var(--linux-glow);
+        }
+
+        .filter-pill.active[data-target="ps"] {
+            background: rgba(96, 165, 250, 0.2);
+            border-color: var(--ps);
+            color: #93c5fd;
+            box-shadow: 0 0 10px var(--ps-glow);
+        }
+
+        .filter-pill.active[data-target="node"] {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: var(--node);
+            color: #34d399;
+            box-shadow: 0 0 10px var(--node-glow);
         }
 
         /* Section Cards */
@@ -212,8 +295,27 @@
             font-size: 0.9rem;
         }
 
+        .card-header-pills {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
         .card-body {
             padding: 20px;
+        }
+
+        .command-group {
+            margin-bottom: 18px;
+            transition: opacity 0.2s ease, max-height 0.2s ease;
+        }
+
+        .command-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .command-group.hidden {
+            display: none !important;
         }
 
         .block-title {
@@ -240,8 +342,23 @@
             color: #cbd5e1;
         }
 
-        .lang-pill.ps { color: #60a5fa; background: rgba(59, 130, 246, 0.15); }
-        .lang-pill.node { color: #4ade80; background: rgba(34, 197, 94, 0.15); }
+        .lang-pill.linux {
+            color: #fbbf24;
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .lang-pill.ps {
+            color: #60a5fa;
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .lang-pill.node {
+            color: #4ade80;
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
 
         /* Code Block Container */
         .code-block {
@@ -250,12 +367,7 @@
             border: 1px solid var(--border);
             border-radius: 10px;
             padding: 14px 16px;
-            margin-bottom: 18px;
             transition: all 0.2s ease;
-        }
-
-        .code-block:last-child {
-            margin-bottom: 0;
         }
 
         .code-block:hover {
@@ -270,6 +382,7 @@
             word-break: break-all;
             white-space: pre-wrap;
             padding-right: 90px;
+            display: block;
         }
 
         /* Copy Button */
@@ -303,20 +416,20 @@
             background: #065f46;
             color: #34d399;
             border-color: #059669;
-            box-shadow: 0 0 10px var(--success-glow);
+            box-shadow: 0 0 10px var(--node-glow);
         }
 
         /* Chips for Text Presets */
-        .text-presets {
+        .presets-row {
             display: flex;
             gap: 8px;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             align-items: center;
             flex-wrap: wrap;
         }
 
-        .text-presets span {
-            font-size: 0.8rem;
+        .presets-row span {
+            font-size: 0.82rem;
             color: var(--text-dim);
             font-weight: 500;
         }
@@ -327,7 +440,7 @@
             color: #38bdf8;
             font-family: var(--font-mono);
             font-size: 0.8rem;
-            padding: 3px 10px;
+            padding: 4px 10px;
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -339,6 +452,13 @@
             color: #fff;
         }
 
+        .preset-chip.active {
+            background: rgba(56, 189, 248, 0.18);
+            border-color: #38bdf8;
+            color: #fff;
+            font-weight: 600;
+        }
+
         /* Guide / Alert Info Box */
         .info-box {
             background: rgba(15, 23, 42, 0.7);
@@ -348,6 +468,11 @@
             margin-bottom: 16px;
             font-size: 0.9rem;
             color: #cbd5e1;
+        }
+
+        .info-box.info-linux {
+            border-left-color: var(--linux);
+            background: rgba(245, 158, 11, 0.05);
         }
 
         .info-box ul {
@@ -395,6 +520,34 @@
             font-weight: 600;
         }
 
+        /* Linux Quick Guide Table */
+        .quick-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+
+        .quick-table th, .quick-table td {
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            text-align: left;
+        }
+
+        .quick-table th {
+            background: var(--bg-card);
+            color: #e2e8f0;
+            font-weight: 600;
+        }
+
+        .quick-table td code {
+            font-family: var(--font-mono);
+            color: #fbbf24;
+            background: rgba(245, 158, 11, 0.08);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
         /* Toast Notification */
         .toast {
             position: fixed;
@@ -405,7 +558,7 @@
             color: #f8fafc;
             padding: 12px 20px;
             border-radius: 8px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.5), 0 0 15px var(--success-glow);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5), 0 0 15px rgba(16, 185, 129, 0.3);
             display: flex;
             align-items: center;
             gap: 10px;
@@ -434,6 +587,8 @@
             margin-top: 40px;
             color: var(--text-dim);
             font-size: 0.85rem;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
         }
 
         footer a {
@@ -445,7 +600,7 @@
             text-decoration: underline;
         }
 
-        @media (max-width: 640px) {
+        @media (max-width: 680px) {
             body {
                 padding: 16px 12px 40px;
             }
@@ -461,6 +616,10 @@
                 flex-direction: column;
                 align-items: flex-start;
             }
+            .filter-toolbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
         }
     </style>
 </head>
@@ -471,7 +630,7 @@
         <header>
             <div class="badge-tag">ESP32 + W5500 Matrix</div>
             <h1>TCP Commands & Control Quick Reference</h1>
-            <p>One-click copy terminal commands for PowerShell and Node.js to control your P10 Countdown Display over Ethernet.</p>
+            <p>One-click copy terminal commands for <strong>Linux (Netcat / Bash)</strong>, <strong>PowerShell</strong>, and <strong>Node.js</strong> to control your P10 Countdown Display over Ethernet.</p>
         </header>
 
         <!-- Live Target Configuration Bar -->
@@ -488,38 +647,98 @@
                     <label for="inputPort">Port</label>
                     <input type="text" id="inputPort" class="port-input" value="5000" placeholder="5000" oninput="updateAllCommands()">
                 </div>
+                <div class="input-item">
+                    <label for="inputSec">Countdown Sec</label>
+                    <input type="number" id="inputSec" class="sec-input" value="15" min="1" max="999" oninput="updateAllCommands()">
+                </div>
                 <button class="btn-reset" onclick="resetDefaults()" title="Reset to default IP & Port">Reset Default</button>
+            </div>
+        </div>
+
+        <!-- Platform Filter Toolbar -->
+        <div class="filter-toolbar">
+            <span class="filter-label">Filter Platform:</span>
+            <div class="filter-pills">
+                <button class="filter-pill active" data-target="all" onclick="filterPlatform('all')">
+                    <span>🌐</span> All Commands
+                </button>
+                <button class="filter-pill" data-target="linux" onclick="filterPlatform('linux')">
+                    <span>🐧</span> Linux (Netcat / Bash)
+                </button>
+                <button class="filter-pill" data-target="ps" onclick="filterPlatform('ps')">
+                    <span>🪟</span> PowerShell
+                </button>
+                <button class="filter-pill" data-target="node" onclick="filterPlatform('node')">
+                    <span>🟩</span> Node.js
+                </button>
             </div>
         </div>
 
         <!-- Section 1: How to display countdown -->
         <section class="section-card" id="sec-countdown">
             <div class="card-header">
-                <h2><span class="icon-tag">⏱</span> # How to display countdown :</h2>
+                <h2><span class="icon-tag">⏱</span> # How to display countdown (Start Countdown):</h2>
+                <div class="card-header-pills">
+                    <span class="lang-pill linux">Linux</span>
+                    <span class="lang-pill ps">PowerShell</span>
+                    <span class="lang-pill node">Node.js</span>
+                </div>
             </div>
             <div class="card-body">
-                <!-- PowerShell -->
-                <div class="block-title">
-                    <span>Using powershell:</span>
-                    <span class="lang-pill ps">PowerShell</span>
+                <!-- Linux Netcat -->
+                <div class="command-group" data-platform="linux">
+                    <div class="block-title">
+                        <span>Linux (Netcat / nc):</span>
+                        <span class="lang-pill linux">Linux (Netcat)</span>
+                    </div>
+                    <div class="code-block">
+                        <button class="btn-copy" onclick="copySnippet(this, 'code-cd-linux')">
+                            <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                        </button>
+                        <pre><code class="code-content" id="code-cd-linux">printf "COUNTDOWN:15\n" | nc 172.1.1.5 5000</code></pre>
+                    </div>
                 </div>
-                <div class="code-block">
-                    <button class="btn-copy" onclick="copySnippet(this, 'code-cd-ps')">
-                        <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
-                    </button>
-                    <pre><code class="code-content" id="code-cd-ps">powershell -Command "$c = New-Object System.Net.Sockets.TcpClient('172.1.1.5', 5000); $w = New-Object System.IO.StreamWriter($c.GetStream()); $w.WriteLine('COUNTDOWN:15'); $w.Flush(); $c.Close()"</code></pre>
+
+                <!-- Linux Bash /dev/tcp alternative -->
+                <div class="command-group" data-platform="linux">
+                    <div class="block-title">
+                        <span>Linux (Native Bash /dev/tcp):</span>
+                        <span class="lang-pill linux">Bash</span>
+                    </div>
+                    <div class="code-block">
+                        <button class="btn-copy" onclick="copySnippet(this, 'code-cd-bash')">
+                            <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                        </button>
+                        <pre><code class="code-content" id="code-cd-bash">echo -e "COUNTDOWN:15\n" > /dev/tcp/172.1.1.5/5000</code></pre>
+                    </div>
+                </div>
+
+                <!-- PowerShell -->
+                <div class="command-group" data-platform="ps">
+                    <div class="block-title">
+                        <span>Windows PowerShell:</span>
+                        <span class="lang-pill ps">PowerShell</span>
+                    </div>
+                    <div class="code-block">
+                        <button class="btn-copy" onclick="copySnippet(this, 'code-cd-ps')">
+                            <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                        </button>
+                        <pre><code class="code-content" id="code-cd-ps">powershell -Command "$c = New-Object System.Net.Sockets.TcpClient('172.1.1.5', 5000); $w = New-Object System.IO.StreamWriter($c.GetStream()); $w.WriteLine('COUNTDOWN:15'); $w.Flush(); $c.Close()"</code></pre>
+                    </div>
                 </div>
 
                 <!-- Node.js -->
-                <div class="block-title">
-                    <span>Using node:</span>
-                    <span class="lang-pill node">Node.js</span>
-                </div>
-                <div class="code-block">
-                    <button class="btn-copy" onclick="copySnippet(this, 'code-cd-node')">
-                        <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
-                    </button>
-                    <pre><code class="code-content" id="code-cd-node">node -e "const s = require('net').connect(5000, '172.1.1.5', () => { s.write('COUNTDOWN:15\n'); }); s.on('data', d => { console.log(d.toString().trim()); s.destroy(); });"</code></pre>
+                <div class="command-group" data-platform="node">
+                    <div class="block-title">
+                        <span>Node.js:</span>
+                        <span class="lang-pill node">Node.js</span>
+                    </div>
+                    <div class="code-block">
+                        <button class="btn-copy" onclick="copySnippet(this, 'code-cd-node')">
+                            <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                        </button>
+                        <pre><code class="code-content" id="code-cd-node">node -e "const s = require('net').connect(5000, '172.1.1.5', () => { s.write('COUNTDOWN:15\n'); }); s.on('data', d => { console.log(d.toString().trim()); s.destroy(); });"</code></pre>
+                    </div>
                 </div>
             </div>
         </section>
@@ -528,14 +747,67 @@
         <section class="section-card" id="sec-pause">
             <div class="card-header">
                 <h2><span class="icon-tag">⏸</span> # Pause Countdown:</h2>
-                <span class="lang-pill node">Node.js</span>
+                <div class="card-header-pills">
+                    <span class="lang-pill linux">Linux</span>
+                    <span class="lang-pill ps">PowerShell</span>
+                    <span class="lang-pill node">Node.js</span>
+                </div>
             </div>
             <div class="card-body">
-                <div class="code-block">
-                    <button class="btn-copy" onclick="copySnippet(this, 'code-pause')">
-                        <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
-                    </button>
-                    <pre><code class="code-content" id="code-pause">node -e "const s = require('net').connect(5000, '172.1.1.5', () => { s.write('PAUSE\n'); s.destroy(); });"</code></pre>
+                <!-- Linux Netcat -->
+                <div class="command-group" data-platform="linux">
+                    <div class="block-title">
+                        <span>Linux (Netcat / nc):</span>
+                        <span class="lang-pill linux">Linux (Netcat)</span>
+                    </div>
+                    <div class="code-block">
+                        <button class="btn-copy" onclick="copySnippet(this, 'code-pause-linux')">
+                            <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                        </button>
+                        <pre><code class="code-content" id="code-pause-linux">printf "PAUSE\n" | nc 172.1.1.5 5000</code></pre>
+                    </div>
+                </div>
+
+                <!-- Linux Bash /dev/tcp -->
+                <div class="command-group" data-platform="linux">
+                    <div class="block-title">
+                        <span>Linux (Native Bash /dev/tcp):</span>
+                        <span class="lang-pill linux">Bash</span>
+                    </div>
+                    <div class="code-block">
+                        <button class="btn-copy" onclick="copySnippet(this, 'code-pause-bash')">
+                            <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                        </button>
+                        <pre><code class="code-content" id="code-pause-bash">echo -e "PAUSE\n" > /dev/tcp/172.1.1.5/5000</code></pre>
+                    </div>
+                </div>
+
+                <!-- PowerShell -->
+                <div class="command-group" data-platform="ps">
+                    <div class="block-title">
+                        <span>Windows PowerShell:</span>
+                        <span class="lang-pill ps">PowerShell</span>
+                    </div>
+                    <div class="code-block">
+                        <button class="btn-copy" onclick="copySnippet(this, 'code-pause-ps')">
+                            <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                        </button>
+                        <pre><code class="code-content" id="code-pause-ps">powershell -Command "$c = New-Object System.Net.Sockets.TcpClient('172.1.1.5', 5000); $w = New-Object System.IO.StreamWriter($c.GetStream()); $w.WriteLine('PAUSE'); $w.Flush(); $c.Close()"</code></pre>
+                    </div>
+                </div>
+
+                <!-- Node.js -->
+                <div class="command-group" data-platform="node">
+                    <div class="block-title">
+                        <span>Node.js:</span>
+                        <span class="lang-pill node">Node.js</span>
+                    </div>
+                    <div class="code-block">
+                        <button class="btn-copy" onclick="copySnippet(this, 'code-pause')">
+                            <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                        </button>
+                        <pre><code class="code-content" id="code-pause">node -e "const s = require('net').connect(5000, '172.1.1.5', () => { s.write('PAUSE\n'); s.destroy(); });"</code></pre>
+                    </div>
                 </div>
             </div>
         </section>
@@ -544,54 +816,304 @@
         <section class="section-card" id="sec-resume">
             <div class="card-header">
                 <h2><span class="icon-tag">▶</span> # Resume Countdown:</h2>
-                <span class="lang-pill node">Node.js</span>
+                <div class="card-header-pills">
+                    <span class="lang-pill linux">Linux</span>
+                    <span class="lang-pill ps">PowerShell</span>
+                    <span class="lang-pill node">Node.js</span>
+                </div>
             </div>
             <div class="card-body">
-                <div class="code-block">
-                    <button class="btn-copy" onclick="copySnippet(this, 'code-resume')">
-                        <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
-                    </button>
-                    <pre><code class="code-content" id="code-resume">node -e "const s = require('net').connect(5000, '172.1.1.5', () => { s.write('RESUME\n'); s.destroy(); });"</code></pre>
+                <!-- Linux Netcat -->
+                <div class="command-group" data-platform="linux">
+                    <div class="block-title">
+                        <span>Linux (Netcat / nc):</span>
+                        <span class="lang-pill linux">Linux (Netcat)</span>
+                    </div>
+                    <div class="code-block">
+                        <button class="btn-copy" onclick="copySnippet(this, 'code-resume-linux')">
+                            <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                        </button>
+                        <pre><code class="code-content" id="code-resume-linux">printf "RESUME\n" | nc 172.1.1.5 5000</code></pre>
+                    </div>
+                </div>
+
+                <!-- Linux Bash /dev/tcp -->
+                <div class="command-group" data-platform="linux">
+                    <div class="block-title">
+                        <span>Linux (Native Bash /dev/tcp):</span>
+                        <span class="lang-pill linux">Bash</span>
+                    </div>
+                    <div class="code-block">
+                        <button class="btn-copy" onclick="copySnippet(this, 'code-resume-bash')">
+                            <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                        </button>
+                        <pre><code class="code-content" id="code-resume-bash">echo -e "RESUME\n" > /dev/tcp/172.1.1.5/5000</code></pre>
+                    </div>
+                </div>
+
+                <!-- PowerShell -->
+                <div class="command-group" data-platform="ps">
+                    <div class="block-title">
+                        <span>Windows PowerShell:</span>
+                        <span class="lang-pill ps">PowerShell</span>
+                    </div>
+                    <div class="code-block">
+                        <button class="btn-copy" onclick="copySnippet(this, 'code-resume-ps')">
+                            <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                        </button>
+                        <pre><code class="code-content" id="code-resume-ps">powershell -Command "$c = New-Object System.Net.Sockets.TcpClient('172.1.1.5', 5000); $w = New-Object System.IO.StreamWriter($c.GetStream()); $w.WriteLine('RESUME'); $w.Flush(); $c.Close()"</code></pre>
+                    </div>
+                </div>
+
+                <!-- Node.js -->
+                <div class="command-group" data-platform="node">
+                    <div class="block-title">
+                        <span>Node.js:</span>
+                        <span class="lang-pill node">Node.js</span>
+                    </div>
+                    <div class="code-block">
+                        <button class="btn-copy" onclick="copySnippet(this, 'code-resume')">
+                            <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                        </button>
+                        <pre><code class="code-content" id="code-resume">node -e "const s = require('net').connect(5000, '172.1.1.5', () => { s.write('RESUME\n'); s.destroy(); });"</code></pre>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Section 4: Display Text -->
+        <!-- Section 4: Stop / Clear Display -->
+        <section class="section-card" id="sec-stop">
+            <div class="card-header">
+                <h2><span class="icon-tag">⏹</span> # Stop / Abort Countdown (Clear Display):</h2>
+                <div class="card-header-pills">
+                    <span class="lang-pill linux">Linux</span>
+                    <span class="lang-pill ps">PowerShell</span>
+                    <span class="lang-pill node">Node.js</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Linux Netcat -->
+                <div class="command-group" data-platform="linux">
+                    <div class="block-title">
+                        <span>Linux (Netcat / nc):</span>
+                        <span class="lang-pill linux">Linux (Netcat)</span>
+                    </div>
+                    <div class="code-block">
+                        <button class="btn-copy" onclick="copySnippet(this, 'code-stop-linux')">
+                            <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                        </button>
+                        <pre><code class="code-content" id="code-stop-linux">printf "STOP\n" | nc 172.1.1.5 5000</code></pre>
+                    </div>
+                </div>
+
+                <!-- Linux Bash /dev/tcp -->
+                <div class="command-group" data-platform="linux">
+                    <div class="block-title">
+                        <span>Linux (Native Bash /dev/tcp):</span>
+                        <span class="lang-pill linux">Bash</span>
+                    </div>
+                    <div class="code-block">
+                        <button class="btn-copy" onclick="copySnippet(this, 'code-stop-bash')">
+                            <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                        </button>
+                        <pre><code class="code-content" id="code-stop-bash">echo -e "STOP\n" > /dev/tcp/172.1.1.5/5000</code></pre>
+                    </div>
+                </div>
+
+                <!-- PowerShell -->
+                <div class="command-group" data-platform="ps">
+                    <div class="block-title">
+                        <span>Windows PowerShell:</span>
+                        <span class="lang-pill ps">PowerShell</span>
+                    </div>
+                    <div class="code-block">
+                        <button class="btn-copy" onclick="copySnippet(this, 'code-stop-ps')">
+                            <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                        </button>
+                        <pre><code class="code-content" id="code-stop-ps">powershell -Command "$c = New-Object System.Net.Sockets.TcpClient('172.1.1.5', 5000); $w = New-Object System.IO.StreamWriter($c.GetStream()); $w.WriteLine('STOP'); $w.Flush(); $c.Close()"</code></pre>
+                    </div>
+                </div>
+
+                <!-- Node.js -->
+                <div class="command-group" data-platform="node">
+                    <div class="block-title">
+                        <span>Node.js:</span>
+                        <span class="lang-pill node">Node.js</span>
+                    </div>
+                    <div class="code-block">
+                        <button class="btn-copy" onclick="copySnippet(this, 'code-stop-node')">
+                            <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                        </button>
+                        <pre><code class="code-content" id="code-stop-node">node -e "const s = require('net').connect(5000, '172.1.1.5', () => { s.write('STOP\n'); s.destroy(); });"</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Display Text -->
         <section class="section-card" id="sec-text">
             <div class="card-header">
                 <h2><span class="icon-tag">🔤</span> # Display Text (e.g. GO, STOP, RDY):</h2>
-                <span class="lang-pill node">Node.js</span>
+                <div class="card-header-pills">
+                    <span class="lang-pill linux">Linux</span>
+                    <span class="lang-pill ps">PowerShell</span>
+                    <span class="lang-pill node">Node.js</span>
+                </div>
             </div>
             <div class="card-body">
-                <div class="text-presets">
+                <div class="presets-row">
                     <span>Quick Word Presets:</span>
-                    <button class="preset-chip" onclick="setTextWord('GO')">GO</button>
-                    <button class="preset-chip" onclick="setTextWord('STOP')">STOP</button>
-                    <button class="preset-chip" onclick="setTextWord('RDY')">RDY</button>
-                    <button class="preset-chip" onclick="setTextWord('SET')">SET</button>
-                    <button class="preset-chip" onclick="setTextWord('HOLD')">HOLD</button>
+                    <button class="preset-chip active" id="chip-GO" onclick="setTextWord('GO')">GO</button>
+                    <button class="preset-chip" id="chip-STOP" onclick="setTextWord('STOP')">STOP</button>
+                    <button class="preset-chip" id="chip-RDY" onclick="setTextWord('RDY')">RDY</button>
+                    <button class="preset-chip" id="chip-SET" onclick="setTextWord('SET')">SET</button>
+                    <button class="preset-chip" id="chip-HOLD" onclick="setTextWord('HOLD')">HOLD</button>
+                    <button class="preset-chip" id="chip-START" onclick="setTextWord('START')">START</button>
                 </div>
-                <div class="code-block">
-                    <button class="btn-copy" onclick="copySnippet(this, 'code-text')">
-                        <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
-                    </button>
-                    <pre><code class="code-content" id="code-text">node -e "const s = require('net').connect(5000, '172.1.1.5', () => { s.write('TEXT:GO\n'); s.destroy(); });"</code></pre>
+
+                <div class="inputs-group" style="margin-bottom: 16px;">
+                    <div class="input-item" style="max-width: 280px;">
+                        <label for="customTextInput">Custom Text</label>
+                        <input type="text" id="customTextInput" value="GO" placeholder="Custom text..." oninput="onCustomTextChange(this.value)">
+                    </div>
+                </div>
+
+                <!-- Linux Netcat -->
+                <div class="command-group" data-platform="linux">
+                    <div class="block-title">
+                        <span>Linux (Netcat / nc):</span>
+                        <span class="lang-pill linux">Linux (Netcat)</span>
+                    </div>
+                    <div class="code-block">
+                        <button class="btn-copy" onclick="copySnippet(this, 'code-text-linux')">
+                            <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                        </button>
+                        <pre><code class="code-content" id="code-text-linux">printf "TEXT:GO\n" | nc 172.1.1.5 5000</code></pre>
+                    </div>
+                </div>
+
+                <!-- Linux Bash /dev/tcp -->
+                <div class="command-group" data-platform="linux">
+                    <div class="block-title">
+                        <span>Linux (Native Bash /dev/tcp):</span>
+                        <span class="lang-pill linux">Bash</span>
+                    </div>
+                    <div class="code-block">
+                        <button class="btn-copy" onclick="copySnippet(this, 'code-text-bash')">
+                            <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                        </button>
+                        <pre><code class="code-content" id="code-text-bash">echo -e "TEXT:GO\n" > /dev/tcp/172.1.1.5/5000</code></pre>
+                    </div>
+                </div>
+
+                <!-- PowerShell -->
+                <div class="command-group" data-platform="ps">
+                    <div class="block-title">
+                        <span>Windows PowerShell:</span>
+                        <span class="lang-pill ps">PowerShell</span>
+                    </div>
+                    <div class="code-block">
+                        <button class="btn-copy" onclick="copySnippet(this, 'code-text-ps')">
+                            <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                        </button>
+                        <pre><code class="code-content" id="code-text-ps">powershell -Command "$c = New-Object System.Net.Sockets.TcpClient('172.1.1.5', 5000); $w = New-Object System.IO.StreamWriter($c.GetStream()); $w.WriteLine('TEXT:GO'); $w.Flush(); $c.Close()"</code></pre>
+                    </div>
+                </div>
+
+                <!-- Node.js -->
+                <div class="command-group" data-platform="node">
+                    <div class="block-title">
+                        <span>Node.js:</span>
+                        <span class="lang-pill node">Node.js</span>
+                    </div>
+                    <div class="code-block">
+                        <button class="btn-copy" onclick="copySnippet(this, 'code-text')">
+                            <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                        </button>
+                        <pre><code class="code-content" id="code-text">node -e "const s = require('net').connect(5000, '172.1.1.5', () => { s.write('TEXT:GO\n'); s.destroy(); });"</code></pre>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Section 5: How to customize -->
+        <!-- Section 6: Device Status Query -->
+        <section class="section-card" id="sec-status">
+            <div class="card-header">
+                <h2><span class="icon-tag">📡</span> # Query Device Status:</h2>
+                <div class="card-header-pills">
+                    <span class="lang-pill linux">Linux</span>
+                    <span class="lang-pill ps">PowerShell</span>
+                    <span class="lang-pill node">Node.js</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="response-box">
+                    <div class="response-label">
+                        <span>⚡</span> Example Expected Response:
+                    </div>
+                    <div class="response-code">STATE:COUNTDOWN,SEC:12 | STATE:IDLE | STATE:TEXT,MSG:GO</div>
+                </div>
+
+                <!-- Linux Netcat -->
+                <div class="command-group" data-platform="linux">
+                    <div class="block-title">
+                        <span>Linux (Netcat / nc with 1s read timeout):</span>
+                        <span class="lang-pill linux">Linux (Netcat)</span>
+                    </div>
+                    <div class="code-block">
+                        <button class="btn-copy" onclick="copySnippet(this, 'code-status-linux')">
+                            <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                        </button>
+                        <pre><code class="code-content" id="code-status-linux">printf "STATUS\n" | nc -w 1 172.1.1.5 5000</code></pre>
+                    </div>
+                </div>
+
+                <!-- PowerShell -->
+                <div class="command-group" data-platform="ps">
+                    <div class="block-title">
+                        <span>Windows PowerShell:</span>
+                        <span class="lang-pill ps">PowerShell</span>
+                    </div>
+                    <div class="code-block">
+                        <button class="btn-copy" onclick="copySnippet(this, 'code-status-ps')">
+                            <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                        </button>
+                        <pre><code class="code-content" id="code-status-ps">powershell -Command "$c = New-Object System.Net.Sockets.TcpClient('172.1.1.5', 5000); $w = New-Object System.IO.StreamWriter($c.GetStream()); $w.WriteLine('STATUS'); $w.Flush(); $r = New-Object System.IO.StreamReader($c.GetStream()); Write-Host $r.ReadLine(); $c.Close()"</code></pre>
+                    </div>
+                </div>
+
+                <!-- Node.js -->
+                <div class="command-group" data-platform="node">
+                    <div class="block-title">
+                        <span>Node.js:</span>
+                        <span class="lang-pill node">Node.js</span>
+                    </div>
+                    <div class="code-block">
+                        <button class="btn-copy" onclick="copySnippet(this, 'code-status-node')">
+                            <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                        </button>
+                        <pre><code class="code-content" id="code-status-node">node -e "const s = require('net').connect(5000, '172.1.1.5', () => { s.write('STATUS\n'); }); s.on('data', d => { console.log(d.toString().trim()); s.destroy(); });"</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 7: How to customize -->
         <section class="section-card" id="sec-customize">
             <div class="card-header">
-                <h2><span class="icon-tag">🛠</span> # How to customize:</h2>
-                <span class="lang-pill ps">PowerShell</span>
+                <h2><span class="icon-tag">🛠</span> # How to customize (Network Configuration):</h2>
+                <div class="card-header-pills">
+                    <span class="lang-pill linux">Linux</span>
+                    <span class="lang-pill ps">PowerShell</span>
+                    <span class="lang-pill node">Node.js</span>
+                </div>
             </div>
             <div class="card-body">
                 <div class="info-box">
                     <p><strong>Configuration Instructions:</strong></p>
                     <ul>
-                        <li>Change the first IP address <code>TcpClient('172.1.1.6', 5000)</code> to the device's current IP.</li>
-                        <li>Change <code>ip='172.1.1.5'</code>, <code>netmask='...'</code>, <code>gateway='...'</code> inside <code>@{...}</code> to the new settings you want to apply.</li>
+                        <li>Target the device's current IP address (e.g. <code>172.1.1.6</code>).</li>
+                        <li>Update the JSON payload fields (<code>ip</code>, <code>netmask</code>, <code>gateway</code>, <code>dns</code>, <code>port</code>) with the desired new settings.</li>
                     </ul>
                 </div>
 
@@ -602,21 +1124,115 @@
                     <div class="response-code">ACK: CONFIG_SAVED | IP: &lt;new_ip&gt; | Rebooting in 500ms</div>
                 </div>
 
-                <div class="block-title">
-                    <span>PowerShell Network Reconfiguration Command:</span>
+                <!-- Linux Netcat -->
+                <div class="command-group" data-platform="linux">
+                    <div class="block-title">
+                        <span>Linux (Netcat / nc):</span>
+                        <span class="lang-pill linux">Linux (Netcat)</span>
+                    </div>
+                    <div class="code-block">
+                        <button class="btn-copy" onclick="copySnippet(this, 'code-config-linux')">
+                            <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                        </button>
+                        <pre><code class="code-content" id="code-config-linux">printf 'CONFIG:{"ip":"172.1.1.5","netmask":"255.255.255.0","gateway":"172.1.1.1","dns":"8.8.8.8","port":5000}\n' | nc -w 1 172.1.1.6 5000</code></pre>
+                    </div>
                 </div>
-                <div class="code-block">
-                    <button class="btn-copy" onclick="copySnippet(this, 'code-config')">
-                        <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
-                    </button>
-                    <pre><code class="code-content" id="code-config">powershell -NoProfile -Command "$cfg = @{ip='172.1.1.5'; netmask='255.255.255.0'; gateway='172.1.1.1'; dns='8.8.8.8'; port=5000} | ConvertTo-Json -Compress; $c = New-Object System.Net.Sockets.TcpClient('172.1.1.6', 5000); $w = New-Object System.IO.StreamWriter($c.GetStream()); $w.WriteLine('CONFIG:' + $cfg); $w.Flush(); $r = New-Object System.IO.StreamReader($c.GetStream()); Write-Host $r.ReadLine(); $c.Close()"</code></pre>
+
+                <!-- PowerShell -->
+                <div class="command-group" data-platform="ps">
+                    <div class="block-title">
+                        <span>Windows PowerShell Network Reconfiguration:</span>
+                        <span class="lang-pill ps">PowerShell</span>
+                    </div>
+                    <div class="code-block">
+                        <button class="btn-copy" onclick="copySnippet(this, 'code-config')">
+                            <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                        </button>
+                        <pre><code class="code-content" id="code-config">powershell -NoProfile -Command "$cfg = @{ip='172.1.1.5'; netmask='255.255.255.0'; gateway='172.1.1.1'; dns='8.8.8.8'; port=5000} | ConvertTo-Json -Compress; $c = New-Object System.Net.Sockets.TcpClient('172.1.1.6', 5000); $w = New-Object System.IO.StreamWriter($c.GetStream()); $w.WriteLine('CONFIG:' + $cfg); $w.Flush(); $r = New-Object System.IO.StreamReader($c.GetStream()); Write-Host $r.ReadLine(); $c.Close()"</code></pre>
+                    </div>
                 </div>
+
+                <!-- Node.js -->
+                <div class="command-group" data-platform="node">
+                    <div class="block-title">
+                        <span>Node.js Network Reconfiguration:</span>
+                        <span class="lang-pill node">Node.js</span>
+                    </div>
+                    <div class="code-block">
+                        <button class="btn-copy" onclick="copySnippet(this, 'code-config-node')">
+                            <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                        </button>
+                        <pre><code class="code-content" id="code-config-node">node -e "const s = require('net').connect(5000, '172.1.1.6', () => { s.write('CONFIG:' + JSON.stringify({ip:'172.1.1.5',netmask:'255.255.255.0',gateway:'172.1.1.1',dns:'8.8.8.8',port:5000}) + '\n'); }); s.on('data', d => { console.log(d.toString().trim()); s.destroy(); });"</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 8: Linux Tips & Quick Reference -->
+        <section class="section-card" id="sec-linux-tips">
+            <div class="card-header">
+                <h2><span class="icon-tag">🐧</span> # Linux / Unix Terminal Tips:</h2>
+                <span class="lang-pill linux">Linux Tips</span>
+            </div>
+            <div class="card-body">
+                <div class="info-box info-linux">
+                    <p><strong>Netcat Installation & Distribution Notes:</strong></p>
+                    <ul>
+                        <li>On Ubuntu / Debian: <code>sudo apt install netcat-openbsd</code> (standard <code>nc</code>).</li>
+                        <li>On RedHat / CentOS / Fedora: <code>sudo dnf install nmap-ncat</code>.</li>
+                        <li>On Arch Linux: <code>sudo pacman -S openbsd-netcat</code>.</li>
+                        <li>Use <code>printf</code> instead of <code>echo</code> for exact newline (<code>\n</code>) line endings without escape variability.</li>
+                        <li>Add <code>-w 1</code> to automatically exit after 1 second if querying bidirectional responses like <code>STATUS</code>.</li>
+                    </ul>
+                </div>
+
+                <table class="quick-table">
+                    <thead>
+                        <tr>
+                            <th>Action</th>
+                            <th>Linux Command (Netcat)</th>
+                            <th>Bash Native (/dev/tcp)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Start 15s Countdown</td>
+                            <td><code>printf "COUNTDOWN:15\n" | nc 172.1.1.5 5000</code></td>
+                            <td><code>echo -e "COUNTDOWN:15\n" > /dev/tcp/172.1.1.5/5000</code></td>
+                        </tr>
+                        <tr>
+                            <td>Pause Countdown</td>
+                            <td><code>printf "PAUSE\n" | nc 172.1.1.5 5000</code></td>
+                            <td><code>echo -e "PAUSE\n" > /dev/tcp/172.1.1.5/5000</code></td>
+                        </tr>
+                        <tr>
+                            <td>Resume Countdown</td>
+                            <td><code>printf "RESUME\n" | nc 172.1.1.5 5000</code></td>
+                            <td><code>echo -e "RESUME\n" > /dev/tcp/172.1.1.5/5000</code></td>
+                        </tr>
+                        <tr>
+                            <td>Stop / Abort</td>
+                            <td><code>printf "STOP\n" | nc 172.1.1.5 5000</code></td>
+                            <td><code>echo -e "STOP\n" > /dev/tcp/172.1.1.5/5000</code></td>
+                        </tr>
+                        <tr>
+                            <td>Display "GO"</td>
+                            <td><code>printf "TEXT:GO\n" | nc 172.1.1.5 5000</code></td>
+                            <td><code>echo -e "TEXT:GO\n" > /dev/tcp/172.1.1.5/5000</code></td>
+                        </tr>
+                        <tr>
+                            <td>Query Status</td>
+                            <td><code>printf "STATUS\n" | nc -w 1 172.1.1.5 5000</code></td>
+                            <td><code>exec 3<>/dev/tcp/172.1.1.5/5000 && echo -e "STATUS\n" >&3 && head -n 1 <&3 && exec 3>&-</code></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </section>
 
         <!-- Footer -->
         <footer>
-            <p>ESP32 W5500 TCP Controller &bull; Compatible with PowerShell 5.1+, PowerShell 7+, and Node.js v14+</p>
+            <p>ESP32 W5500 TCP Controller &bull; Compatible with Linux (nc / netcat / bash), PowerShell 5.1+, PowerShell 7+, and Node.js v14+</p>
         </footer>
     </div>
 
@@ -633,43 +1249,201 @@
         function getTargetSettings() {
             const ip = document.getElementById('inputIp').value.trim() || '172.1.1.5';
             const port = document.getElementById('inputPort').value.trim() || '5000';
-            return { ip, port };
+            const sec = document.getElementById('inputSec').value.trim() || '15';
+            return { ip, port, sec };
         }
 
         function updateAllCommands() {
-            const { ip, port } = getTargetSettings();
+            const { ip, port, sec } = getTargetSettings();
 
-            // 1. Countdown PowerShell
-            document.getElementById('code-cd-ps').textContent = 
-                `powershell -Command "$c = New-Object System.Net.Sockets.TcpClient('${ip}', ${port}); $w = New-Object System.IO.StreamWriter($c.GetStream()); $w.WriteLine('COUNTDOWN:15'); $w.Flush(); $c.Close()"`;
+            // 1. Countdown
+            // Linux Netcat
+            const elCdLinux = document.getElementById('code-cd-linux');
+            if (elCdLinux) elCdLinux.textContent = `printf "COUNTDOWN:${sec}\\n" | nc ${ip} ${port}`;
 
-            // 1. Countdown Node
-            document.getElementById('code-cd-node').textContent = 
-                `node -e "const s = require('net').connect(${port}, '${ip}', () => { s.write('COUNTDOWN:15\\n'); }); s.on('data', d => { console.log(d.toString().trim()); s.destroy(); });"`;
+            // Linux Bash /dev/tcp
+            const elCdBash = document.getElementById('code-cd-bash');
+            if (elCdBash) elCdBash.textContent = `echo -e "COUNTDOWN:${sec}\\n" > /dev/tcp/${ip}/${port}`;
+
+            // PowerShell
+            const elCdPs = document.getElementById('code-cd-ps');
+            if (elCdPs) {
+                elCdPs.textContent = 
+                    `powershell -Command "$c = New-Object System.Net.Sockets.TcpClient('${ip}', ${port}); $w = New-Object System.IO.StreamWriter($c.GetStream()); $w.WriteLine('COUNTDOWN:${sec}'); $w.Flush(); $c.Close()"`;
+            }
+
+            // Node.js
+            const elCdNode = document.getElementById('code-cd-node');
+            if (elCdNode) {
+                elCdNode.textContent = 
+                    `node -e "const s = require('net').connect(${port}, '${ip}', () => { s.write('COUNTDOWN:${sec}\\n'); }); s.on('data', d => { console.log(d.toString().trim()); s.destroy(); });"`;
+            }
 
             // 2. Pause
-            document.getElementById('code-pause').textContent = 
-                `node -e "const s = require('net').connect(${port}, '${ip}', () => { s.write('PAUSE\\n'); s.destroy(); });"`;
+            const elPauseLinux = document.getElementById('code-pause-linux');
+            if (elPauseLinux) elPauseLinux.textContent = `printf "PAUSE\\n" | nc ${ip} ${port}`;
+
+            const elPauseBash = document.getElementById('code-pause-bash');
+            if (elPauseBash) elPauseBash.textContent = `echo -e "PAUSE\\n" > /dev/tcp/${ip}/${port}`;
+
+            const elPausePs = document.getElementById('code-pause-ps');
+            if (elPausePs) {
+                elPausePs.textContent = 
+                    `powershell -Command "$c = New-Object System.Net.Sockets.TcpClient('${ip}', ${port}); $w = New-Object System.IO.StreamWriter($c.GetStream()); $w.WriteLine('PAUSE'); $w.Flush(); $c.Close()"`;
+            }
+
+            const elPause = document.getElementById('code-pause');
+            if (elPause) {
+                elPause.textContent = 
+                    `node -e "const s = require('net').connect(${port}, '${ip}', () => { s.write('PAUSE\\n'); s.destroy(); });"`;
+            }
 
             // 3. Resume
-            document.getElementById('code-resume').textContent = 
-                `node -e "const s = require('net').connect(${port}, '${ip}', () => { s.write('RESUME\\n'); s.destroy(); });"`;
+            const elResumeLinux = document.getElementById('code-resume-linux');
+            if (elResumeLinux) elResumeLinux.textContent = `printf "RESUME\\n" | nc ${ip} ${port}`;
 
-            // 4. Text
-            document.getElementById('code-text').textContent = 
-                `node -e "const s = require('net').connect(${port}, '${ip}', () => { s.write('TEXT:${currentTextWord}\\n'); s.destroy(); });"`;
+            const elResumeBash = document.getElementById('code-resume-bash');
+            if (elResumeBash) elResumeBash.textContent = `echo -e "RESUME\\n" > /dev/tcp/${ip}/${port}`;
+
+            const elResumePs = document.getElementById('code-resume-ps');
+            if (elResumePs) {
+                elResumePs.textContent = 
+                    `powershell -Command "$c = New-Object System.Net.Sockets.TcpClient('${ip}', ${port}); $w = New-Object System.IO.StreamWriter($c.GetStream()); $w.WriteLine('RESUME'); $w.Flush(); $c.Close()"`;
+            }
+
+            const elResume = document.getElementById('code-resume');
+            if (elResume) {
+                elResume.textContent = 
+                    `node -e "const s = require('net').connect(${port}, '${ip}', () => { s.write('RESUME\\n'); s.destroy(); });"`;
+            }
+
+            // 4. Stop
+            const elStopLinux = document.getElementById('code-stop-linux');
+            if (elStopLinux) elStopLinux.textContent = `printf "STOP\\n" | nc ${ip} ${port}`;
+
+            const elStopBash = document.getElementById('code-stop-bash');
+            if (elStopBash) elStopBash.textContent = `echo -e "STOP\\n" > /dev/tcp/${ip}/${port}`;
+
+            const elStopPs = document.getElementById('code-stop-ps');
+            if (elStopPs) {
+                elStopPs.textContent = 
+                    `powershell -Command "$c = New-Object System.Net.Sockets.TcpClient('${ip}', ${port}); $w = New-Object System.IO.StreamWriter($c.GetStream()); $w.WriteLine('STOP'); $w.Flush(); $c.Close()"`;
+            }
+
+            const elStopNode = document.getElementById('code-stop-node');
+            if (elStopNode) {
+                elStopNode.textContent = 
+                    `node -e "const s = require('net').connect(${port}, '${ip}', () => { s.write('STOP\\n'); s.destroy(); });"`;
+            }
+
+            // 5. Text
+            const elTextLinux = document.getElementById('code-text-linux');
+            if (elTextLinux) elTextLinux.textContent = `printf "TEXT:${currentTextWord}\\n" | nc ${ip} ${port}`;
+
+            const elTextBash = document.getElementById('code-text-bash');
+            if (elTextBash) elTextBash.textContent = `echo -e "TEXT:${currentTextWord}\\n" > /dev/tcp/${ip}/${port}`;
+
+            const elTextPs = document.getElementById('code-text-ps');
+            if (elTextPs) {
+                elTextPs.textContent = 
+                    `powershell -Command "$c = New-Object System.Net.Sockets.TcpClient('${ip}', ${port}); $w = New-Object System.IO.StreamWriter($c.GetStream()); $w.WriteLine('TEXT:${currentTextWord}'); $w.Flush(); $c.Close()"`;
+            }
+
+            const elText = document.getElementById('code-text');
+            if (elText) {
+                elText.textContent = 
+                    `node -e "const s = require('net').connect(${port}, '${ip}', () => { s.write('TEXT:${currentTextWord}\\n'); s.destroy(); });"`;
+            }
+
+            // 6. Status
+            const elStatusLinux = document.getElementById('code-status-linux');
+            if (elStatusLinux) elStatusLinux.textContent = `printf "STATUS\\n" | nc -w 1 ${ip} ${port}`;
+
+            const elStatusPs = document.getElementById('code-status-ps');
+            if (elStatusPs) {
+                elStatusPs.textContent = 
+                    `powershell -Command "$c = New-Object System.Net.Sockets.TcpClient('${ip}', ${port}); $w = New-Object System.IO.StreamWriter($c.GetStream()); $w.WriteLine('STATUS'); $w.Flush(); $r = New-Object System.IO.StreamReader($c.GetStream()); Write-Host $r.ReadLine(); $c.Close()"`;
+            }
+
+            const elStatusNode = document.getElementById('code-status-node');
+            if (elStatusNode) {
+                elStatusNode.textContent = 
+                    `node -e "const s = require('net').connect(${port}, '${ip}', () => { s.write('STATUS\\n'); }); s.on('data', d => { console.log(d.toString().trim()); s.destroy(); });"`;
+            }
+
+            // 7. Config
+            const elCfgLinux = document.getElementById('code-config-linux');
+            if (elCfgLinux) {
+                elCfgLinux.textContent = `printf 'CONFIG:{"ip":"${ip}","netmask":"255.255.255.0","gateway":"172.1.1.1","dns":"8.8.8.8","port":${port}}\\n' | nc -w 1 172.1.1.6 ${port}`;
+            }
+
+            const elCfgNode = document.getElementById('code-config-node');
+            if (elCfgNode) {
+                elCfgNode.textContent = `node -e "const s = require('net').connect(${port}, '172.1.1.6', () => { s.write('CONFIG:' + JSON.stringify({ip:'${ip}',netmask:'255.255.255.0',gateway:'172.1.1.1',dns:'8.8.8.8',port:${port}}) + '\\n'); }); s.on('data', d => { console.log(d.toString().trim()); s.destroy(); });"`;
+            }
         }
 
         function setTextWord(word) {
             currentTextWord = word;
+            const inputEl = document.getElementById('customTextInput');
+            if (inputEl) inputEl.value = word;
+
+            // Highlight active preset chip
+            document.querySelectorAll('.preset-chip').forEach(chip => {
+                chip.classList.toggle('active', chip.textContent.trim() === word);
+            });
+
             updateAllCommands();
             showToast(`Preset text updated to "${word}"`);
+        }
+
+        function onCustomTextChange(val) {
+            currentTextWord = val.trim() || 'GO';
+            document.querySelectorAll('.preset-chip').forEach(chip => {
+                chip.classList.toggle('active', chip.textContent.trim() === currentTextWord);
+            });
+            updateAllCommands();
+        }
+
+        function filterPlatform(platform) {
+            // Update filter pill buttons
+            document.querySelectorAll('.filter-pill').forEach(pill => {
+                pill.classList.toggle('active', pill.getAttribute('data-target') === platform);
+            });
+
+            // Show or hide command groups
+            const allGroups = document.querySelectorAll('.command-group');
+            allGroups.forEach(group => {
+                const groupPlatform = group.getAttribute('data-platform');
+                if (platform === 'all' || groupPlatform === platform) {
+                    group.classList.remove('hidden');
+                } else {
+                    group.classList.add('hidden');
+                }
+            });
+
+            const labels = {
+                'all': 'Showing all platforms',
+                'linux': 'Filtered: Linux (Netcat / Bash) only',
+                'ps': 'Filtered: Windows PowerShell only',
+                'node': 'Filtered: Node.js only'
+            };
+            showToast(labels[platform] || 'Filter updated');
         }
 
         function resetDefaults() {
             document.getElementById('inputIp').value = '172.1.1.5';
             document.getElementById('inputPort').value = '5000';
+            document.getElementById('inputSec').value = '15';
+            const customInput = document.getElementById('customTextInput');
+            if (customInput) customInput.value = 'GO';
             currentTextWord = 'GO';
+
+            document.querySelectorAll('.preset-chip').forEach(chip => {
+                chip.classList.toggle('active', chip.textContent.trim() === 'GO');
+            });
+
+            filterPlatform('all');
             updateAllCommands();
             showToast('Reset to default values (172.1.1.5:5000)');
         }
@@ -680,7 +1454,6 @@
             const textToCopy = codeEl.textContent.trim();
 
             copyToClipboard(textToCopy, () => {
-                // Button UI animation
                 const originalHtml = buttonElement.innerHTML;
                 buttonElement.classList.add('copied');
                 buttonElement.innerHTML = `<span class="copy-icon">✓</span> <span class="copy-text">Copied!</span>`;
@@ -734,6 +1507,11 @@
                 toast.classList.remove('show');
             }, 2500);
         }
+
+        // Initialize commands on load
+        window.addEventListener('DOMContentLoaded', () => {
+            updateAllCommands();
+        });
     </script>
 </body>
 </html>
