@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP32 W5500 TCP Commands Reference</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #0a0e17;
+            --bg-surface: #111726;
+            --bg-card: #161f33;
+            --bg-code: #0b111e;
+            --border: #232f48;
+            --border-highlight: #3b82f6;
+            --primary: #3b82f6;
+            --primary-glow: rgba(59, 130, 246, 0.25);
+            --success: #10b981;
+            --success-glow: rgba(16, 185, 129, 0.25);
+            --warning: #f59e0b;
+            --warning-glow: rgba(245, 158, 11, 0.2);
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+            --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --font-mono: 'JetBrains Mono', Consolas, Monaco, monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 30px 20px 60px;
+        }
+
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 35px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .badge-tag {
+            display: inline-block;
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            padding: 4px 14px;
+            border-radius: 9999px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        header h1 {
+            font-size: 2.1rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        /* Interactive Dynamic Settings Bar */
+        .settings-bar {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .settings-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #e2e8f0;
+        }
+
+        .inputs-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .input-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 6px 12px;
+        }
+
+        .input-item label {
+            font-size: 0.82rem;
+            color: var(--text-dim);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .input-item input {
+            background: transparent;
+            border: none;
+            color: #38bdf8;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            font-weight: 600;
+            width: 110px;
+            outline: none;
+        }
+
+        .input-item input.port-input {
+            width: 55px;
+        }
+
+        .btn-reset {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            border-radius: 8px;
+            padding: 7px 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-reset:hover {
+            color: #fff;
+            border-color: var(--text-dim);
+            background: var(--bg-card);
+        }
+
+        /* Section Cards */
+        .section-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            margin-bottom: 26px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.18);
+            transition: border-color 0.2s ease;
+        }
+
+        .section-card:hover {
+            border-color: rgba(59, 130, 246, 0.45);
+        }
+
+        .card-header {
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .card-header h2 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+        }
+
+        .card-header .icon-tag {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .block-title {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .lang-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.75rem;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.06);
+            color: #cbd5e1;
+        }
+
+        .lang-pill.ps { color: #60a5fa; background: rgba(59, 130, 246, 0.15); }
+        .lang-pill.node { color: #4ade80; background: rgba(34, 197, 94, 0.15); }
+
+        /* Code Block Container */
+        .code-block {
+            position: relative;
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 18px;
+            transition: all 0.2s ease;
+        }
+
+        .code-block:last-child {
+            margin-bottom: 0;
+        }
+
+        .code-block:hover {
+            border-color: #334155;
+        }
+
+        .code-content {
+            font-family: var(--font-mono);
+            font-size: 0.86rem;
+            line-height: 1.55;
+            color: #e2e8f0;
+            word-break: break-all;
+            white-space: pre-wrap;
+            padding-right: 90px;
+        }
+
+        /* Copy Button */
+        .btn-copy {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #1e293b;
+            color: #cbd5e1;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 0.78rem;
+            font-family: var(--font-sans);
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .btn-copy:hover {
+            background: #334155;
+            color: #fff;
+            border-color: #475569;
+        }
+
+        .btn-copy.copied {
+            background: #065f46;
+            color: #34d399;
+            border-color: #059669;
+            box-shadow: 0 0 10px var(--success-glow);
+        }
+
+        /* Chips for Text Presets */
+        .text-presets {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .text-presets span {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            font-weight: 500;
+        }
+
+        .preset-chip {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: #38bdf8;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            padding: 3px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .preset-chip:hover {
+            background: #1e293b;
+            border-color: #38bdf8;
+            color: #fff;
+        }
+
+        /* Guide / Alert Info Box */
+        .info-box {
+            background: rgba(15, 23, 42, 0.7);
+            border-left: 4px solid var(--border-highlight);
+            padding: 14px 16px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 16px;
+            font-size: 0.9rem;
+            color: #cbd5e1;
+        }
+
+        .info-box ul {
+            margin-left: 20px;
+            margin-top: 6px;
+        }
+
+        .info-box li {
+            margin-bottom: 4px;
+        }
+
+        .info-box code {
+            font-family: var(--font-mono);
+            background: rgba(255, 255, 255, 0.08);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #38bdf8;
+            font-size: 0.84rem;
+        }
+
+        .response-box {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 18px;
+        }
+
+        .response-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #34d399;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .response-code {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: #6ee7b7;
+            font-weight: 600;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #0f172a;
+            border: 1px solid #10b981;
+            color: #f8fafc;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5), 0 0 15px var(--success-glow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-icon {
+            color: #10b981;
+            font-size: 1.1rem;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+        }
+
+        footer a {
+            color: #60a5fa;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 16px 12px 40px;
+            }
+            header h1 {
+                font-size: 1.6rem;
+            }
+            .code-content {
+                padding-right: 0;
+                padding-top: 36px;
+                font-size: 0.8rem;
+            }
+            .settings-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="badge-tag">ESP32 + W5500 Matrix</div>
+            <h1>TCP Commands & Control Quick Reference</h1>
+            <p>One-click copy terminal commands for PowerShell and Node.js to control your P10 Countdown Display over Ethernet.</p>
+        </header>
+
+        <!-- Live Target Configuration Bar -->
+        <div class="settings-bar">
+            <div class="settings-title">
+                <span>⚙️ Target Settings:</span>
+            </div>
+            <div class="inputs-group">
+                <div class="input-item">
+                    <label for="inputIp">Target IP</label>
+                    <input type="text" id="inputIp" value="172.1.1.5" placeholder="172.1.1.5" oninput="updateAllCommands()">
+                </div>
+                <div class="input-item">
+                    <label for="inputPort">Port</label>
+                    <input type="text" id="inputPort" class="port-input" value="5000" placeholder="5000" oninput="updateAllCommands()">
+                </div>
+                <button class="btn-reset" onclick="resetDefaults()" title="Reset to default IP & Port">Reset Default</button>
+            </div>
+        </div>
+
+        <!-- Section 1: How to display countdown -->
+        <section class="section-card" id="sec-countdown">
+            <div class="card-header">
+                <h2><span class="icon-tag">⏱</span> # How to display countdown :</h2>
+            </div>
+            <div class="card-body">
+                <!-- PowerShell -->
+                <div class="block-title">
+                    <span>Using powershell:</span>
+                    <span class="lang-pill ps">PowerShell</span>
+                </div>
+                <div class="code-block">
+                    <button class="btn-copy" onclick="copySnippet(this, 'code-cd-ps')">
+                        <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                    </button>
+                    <pre><code class="code-content" id="code-cd-ps">powershell -Command "$c = New-Object System.Net.Sockets.TcpClient('172.1.1.5', 5000); $w = New-Object System.IO.StreamWriter($c.GetStream()); $w.WriteLine('COUNTDOWN:15'); $w.Flush(); $c.Close()"</code></pre>
+                </div>
+
+                <!-- Node.js -->
+                <div class="block-title">
+                    <span>Using node:</span>
+                    <span class="lang-pill node">Node.js</span>
+                </div>
+                <div class="code-block">
+                    <button class="btn-copy" onclick="copySnippet(this, 'code-cd-node')">
+                        <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                    </button>
+                    <pre><code class="code-content" id="code-cd-node">node -e "const s = require('net').connect(5000, '172.1.1.5', () => { s.write('COUNTDOWN:15\n'); }); s.on('data', d => { console.log(d.toString().trim()); s.destroy(); });"</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Pause Countdown -->
+        <section class="section-card" id="sec-pause">
+            <div class="card-header">
+                <h2><span class="icon-tag">⏸</span> # Pause Countdown:</h2>
+                <span class="lang-pill node">Node.js</span>
+            </div>
+            <div class="card-body">
+                <div class="code-block">
+                    <button class="btn-copy" onclick="copySnippet(this, 'code-pause')">
+                        <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                    </button>
+                    <pre><code class="code-content" id="code-pause">node -e "const s = require('net').connect(5000, '172.1.1.5', () => { s.write('PAUSE\n'); s.destroy(); });"</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Resume Countdown -->
+        <section class="section-card" id="sec-resume">
+            <div class="card-header">
+                <h2><span class="icon-tag">▶</span> # Resume Countdown:</h2>
+                <span class="lang-pill node">Node.js</span>
+            </div>
+            <div class="card-body">
+                <div class="code-block">
+                    <button class="btn-copy" onclick="copySnippet(this, 'code-resume')">
+                        <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                    </button>
+                    <pre><code class="code-content" id="code-resume">node -e "const s = require('net').connect(5000, '172.1.1.5', () => { s.write('RESUME\n'); s.destroy(); });"</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Display Text -->
+        <section class="section-card" id="sec-text">
+            <div class="card-header">
+                <h2><span class="icon-tag">🔤</span> # Display Text (e.g. GO, STOP, RDY):</h2>
+                <span class="lang-pill node">Node.js</span>
+            </div>
+            <div class="card-body">
+                <div class="text-presets">
+                    <span>Quick Word Presets:</span>
+                    <button class="preset-chip" onclick="setTextWord('GO')">GO</button>
+                    <button class="preset-chip" onclick="setTextWord('STOP')">STOP</button>
+                    <button class="preset-chip" onclick="setTextWord('RDY')">RDY</button>
+                    <button class="preset-chip" onclick="setTextWord('SET')">SET</button>
+                    <button class="preset-chip" onclick="setTextWord('HOLD')">HOLD</button>
+                </div>
+                <div class="code-block">
+                    <button class="btn-copy" onclick="copySnippet(this, 'code-text')">
+                        <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                    </button>
+                    <pre><code class="code-content" id="code-text">node -e "const s = require('net').connect(5000, '172.1.1.5', () => { s.write('TEXT:GO\n'); s.destroy(); });"</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: How to customize -->
+        <section class="section-card" id="sec-customize">
+            <div class="card-header">
+                <h2><span class="icon-tag">🛠</span> # How to customize:</h2>
+                <span class="lang-pill ps">PowerShell</span>
+            </div>
+            <div class="card-body">
+                <div class="info-box">
+                    <p><strong>Configuration Instructions:</strong></p>
+                    <ul>
+                        <li>Change the first IP address <code>TcpClient('172.1.1.6', 5000)</code> to the device's current IP.</li>
+                        <li>Change <code>ip='172.1.1.5'</code>, <code>netmask='...'</code>, <code>gateway='...'</code> inside <code>@{...}</code> to the new settings you want to apply.</li>
+                    </ul>
+                </div>
+
+                <div class="response-box">
+                    <div class="response-label">
+                        <span>⚡</span> Immediate Response:
+                    </div>
+                    <div class="response-code">ACK: CONFIG_SAVED | IP: &lt;new_ip&gt; | Rebooting in 500ms</div>
+                </div>
+
+                <div class="block-title">
+                    <span>PowerShell Network Reconfiguration Command:</span>
+                </div>
+                <div class="code-block">
+                    <button class="btn-copy" onclick="copySnippet(this, 'code-config')">
+                        <span class="copy-icon">📋</span> <span class="copy-text">Copy</span>
+                    </button>
+                    <pre><code class="code-content" id="code-config">powershell -NoProfile -Command "$cfg = @{ip='172.1.1.5'; netmask='255.255.255.0'; gateway='172.1.1.1'; dns='8.8.8.8'; port=5000} | ConvertTo-Json -Compress; $c = New-Object System.Net.Sockets.TcpClient('172.1.1.6', 5000); $w = New-Object System.IO.StreamWriter($c.GetStream()); $w.WriteLine('CONFIG:' + $cfg); $w.Flush(); $r = New-Object System.IO.StreamReader($c.GetStream()); Write-Host $r.ReadLine(); $c.Close()"</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>ESP32 W5500 TCP Controller &bull; Compatible with PowerShell 5.1+, PowerShell 7+, and Node.js v14+</p>
+        </footer>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <span class="toast-icon">✓</span>
+        <span id="toast-msg">Copied to clipboard!</span>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        let currentTextWord = 'GO';
+
+        function getTargetSettings() {
+            const ip = document.getElementById('inputIp').value.trim() || '172.1.1.5';
+            const port = document.getElementById('inputPort').value.trim() || '5000';
+            return { ip, port };
+        }
+
+        function updateAllCommands() {
+            const { ip, port } = getTargetSettings();
+
+            // 1. Countdown PowerShell
+            document.getElementById('code-cd-ps').textContent = 
+                `powershell -Command "$c = New-Object System.Net.Sockets.TcpClient('${ip}', ${port}); $w = New-Object System.IO.StreamWriter($c.GetStream()); $w.WriteLine('COUNTDOWN:15'); $w.Flush(); $c.Close()"`;
+
+            // 1. Countdown Node
+            document.getElementById('code-cd-node').textContent = 
+                `node -e "const s = require('net').connect(${port}, '${ip}', () => { s.write('COUNTDOWN:15\\n'); }); s.on('data', d => { console.log(d.toString().trim()); s.destroy(); });"`;
+
+            // 2. Pause
+            document.getElementById('code-pause').textContent = 
+                `node -e "const s = require('net').connect(${port}, '${ip}', () => { s.write('PAUSE\\n'); s.destroy(); });"`;
+
+            // 3. Resume
+            document.getElementById('code-resume').textContent = 
+                `node -e "const s = require('net').connect(${port}, '${ip}', () => { s.write('RESUME\\n'); s.destroy(); });"`;
+
+            // 4. Text
+            document.getElementById('code-text').textContent = 
+                `node -e "const s = require('net').connect(${port}, '${ip}', () => { s.write('TEXT:${currentTextWord}\\n'); s.destroy(); });"`;
+        }
+
+        function setTextWord(word) {
+            currentTextWord = word;
+            updateAllCommands();
+            showToast(`Preset text updated to "${word}"`);
+        }
+
+        function resetDefaults() {
+            document.getElementById('inputIp').value = '172.1.1.5';
+            document.getElementById('inputPort').value = '5000';
+            currentTextWord = 'GO';
+            updateAllCommands();
+            showToast('Reset to default values (172.1.1.5:5000)');
+        }
+
+        function copySnippet(buttonElement, codeElementId) {
+            const codeEl = document.getElementById(codeElementId);
+            if (!codeEl) return;
+            const textToCopy = codeEl.textContent.trim();
+
+            copyToClipboard(textToCopy, () => {
+                // Button UI animation
+                const originalHtml = buttonElement.innerHTML;
+                buttonElement.classList.add('copied');
+                buttonElement.innerHTML = `<span class="copy-icon">✓</span> <span class="copy-text">Copied!</span>`;
+
+                showToast('Copied to clipboard!');
+
+                setTimeout(() => {
+                    buttonElement.classList.remove('copied');
+                    buttonElement.innerHTML = originalHtml;
+                }, 2000);
+            });
+        }
+
+        function copyToClipboard(text, onSuccess) {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text)
+                    .then(onSuccess)
+                    .catch(() => fallbackCopy(text, onSuccess));
+            } else {
+                fallbackCopy(text, onSuccess);
+            }
+        }
+
+        function fallbackCopy(text, onSuccess) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.left = '-9999px';
+            textarea.style.top = '0';
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            try {
+                const successful = document.execCommand('copy');
+                if (successful && onSuccess) onSuccess();
+            } catch (err) {
+                console.error('Fallback copy error:', err);
+            }
+            document.body.removeChild(textarea);
+        }
+
+        let toastTimeout;
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-msg');
+            toastMsg.textContent = message;
+            toast.classList.add('show');
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
